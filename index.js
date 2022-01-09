@@ -56,5 +56,23 @@ const allRoles = ()=>{
         menu();
     });
 }
+const allEmployees = ()=>{
+    const sql =`select e.id, e.first_name, e.last_name, role.title as job_title, department.name as department, salary,
+     CONCAT(m.first_name, ' ', m.last_name) AS manager_name 
+     from employee e left join employee m on e.manager_id=m.id 
+     left join role on e.role_id=role.id 
+     left join department on role.department_id=department.id 
+     order by manager_name`;
 
+    db.query(sql, (err, rows)=>{
+        if(err){
+            console.log(err);
+        }
+        console.log('======== All Employees ========\n');
+        console.table(rows);
+        console.log(' =============================== ');
+        
+        menu();
+    });
+}
 menu();
