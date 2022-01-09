@@ -43,5 +43,18 @@ const allDepartments = ()=>{
         menu();
     });
 }
+const allRoles = ()=>{
+    const sql =`select role.id, title as job_title, department.name as department, salary from role left join department on role.department_id=department.id`;
+    db.query(sql, (err, rows)=>{
+        if(err){
+            console.log(err);
+        }
+        console.log('======== All Roles ========\n');
+        console.table(rows);
+        console.log('===============================');
+        
+        menu();
+    });
+}
 
 menu();
