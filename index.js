@@ -2,9 +2,36 @@ const inquirer = require('inquirer');
 const db = require('./db/connection');
 const cTable = require('console.table');
 
+var departments = [];
+var roles = [];
+
+function getDepartments(){
+db.query('select name from department', (err, rows)=>{
+        if(err){
+            throw err;
+        }
+        //console.log(rows);
+        rows.map(row => departments.push(row.name));
+        departments.push(rows) ;
+      // console.log(departments);
+    });
+}
+function getRoles(){
+db.query('select title from role', (err, rows)=>{
+        if(err){
+            throw err;
+        }
+        //console.log(rows);
+        rows.map(row => roles.push(row.title));
+        //roles.push(rows) ;
+        console.log(roles);
+    });
+}
+getDepartments();
+getRoles();
 //Menu 
 const menu = ()=>{
-    inquirer.prompt({
+   return inquirer.prompt({
         type : 'list',
         name: 'action',
         message: 'What would you like to do?',
@@ -25,11 +52,10 @@ const menu = ()=>{
                 break;
             case 'update an employee role': updateEmployee();
                 break;
-            default : menu();
+            
         }
     });
 }
-
 const allDepartments = ()=>{
     const sql =`select * from department`;
     db.query(sql, (err, rows)=>{
@@ -38,7 +64,7 @@ const allDepartments = ()=>{
         }
         console.log('======== All Departments ========\n');
         console.table(rows);
-        console.log('===============================');
+        console.log('=================================');
         
         menu();
     });
@@ -49,7 +75,7 @@ const allRoles = ()=>{
         if(err){
             console.log(err);
         }
-        console.log('======== All Roles ========\n');
+        console.log('========== All Roles ==========\n');
         console.table(rows);
         console.log('===============================');
         
@@ -70,9 +96,37 @@ const allEmployees = ()=>{
         }
         console.log('======== All Employees ========\n');
         console.table(rows);
-        console.log(' =============================== ');
+        console.log('================================ ');
         
         menu();
     });
 }
+const addDepartment = ()=>{
+    return inquirer.prompt({
+        type: 'input',
+        name: 'departmentName',
+        message: 'What is the name of the department?(Required)',
+        validate: department =>{
+            if(department){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }).then(({departmentName})=>{
+        //insert department into db
+        const sql =`insert into department (name) values ("${departmentName}")`;
+        db.query(sql, (err, result)=>{
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`Added ${departmentName}`);
+            menu();
+        });
+    });
+
+}
+
+// console.log(departments);
 menu();
