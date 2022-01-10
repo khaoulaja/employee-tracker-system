@@ -127,6 +127,52 @@ const addDepartment = ()=>{
     });
 
 }
+const addRole = ()=>{
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'role',
+            message: 'What is the name of the role?(Required)',
+            validate: roleName =>{
+                if(roleName){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary of the role?',
+            validate: roleSal=>{
+                if(roleSal){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'list',
+            name: 'department',
+            message: 'Which department does the role belong to?',
+            choices: departments
+        }
+]).then(({role, salary, department})=>{
+        //add new role to db
+        const sql =`insert into role (title, salary, department_id) values('${role}', ${salary}, (select id from department where name='${department}'));`;
+        db.query(sql, (err, result)=>{
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`Added ${role} to the database`);
+            menu();
+        });
+    });
+
+}
 
 // console.log(departments);
 menu();
