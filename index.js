@@ -7,6 +7,7 @@ var roles = [];
 var employees =['N/A'] ;
 var chooseEmpl=[];
 
+
 function getDepartments(){
     departments=[];
 db.query('select name from department', (err, rows)=>{
@@ -43,6 +44,17 @@ db.query(`select CONCAT(first_name,' ',last_name) AS name from employee`, (err, 
     });
     
 }
+//welcome message
+console.log(`
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+|                                                   |
+=======< Welcome To Employee Tracker System >=======
+|                                                   |
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`);
+
 getDepartments();
 getRoles();
 getEmployees();

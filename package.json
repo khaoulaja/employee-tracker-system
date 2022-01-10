@@ -1,5 +1,5 @@
 {
-  "name": "your-tracked",
+  "name": "employee-tracker-system",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/khaoulaja/your-tracked.git"
+    "url": "git+https://github.com/khaoulaja/employee-tracker-system.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/khaoulaja/your-tracked/issues"
+    "url": "https://github.com/khaoulaja/employee-tracker-system/issues"
   },
-  "homepage": "https://github.com/khaoulaja/your-tracked#readme",
+  "homepage": "https://github.com/khaoulaja/employee-tracker-system#readme",
   "dependencies": {
     "console.table": "^0.10.0",
     "inquirer": "^8.2.0",

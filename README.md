@@ -14,7 +14,7 @@
 
   ## Installation
 
-  * First of all you need to have MySQL installed in your machine, to do that refer to [mysql-installation-guide](https://coding-boot-camp.github.io/full-stack/mysql/mysql-installation-guide).
+  * First of all you need to have MySQL installed in your machine, to do that refer to [mysql-installation-guide](https://coding-boot-camp.github.io/full-stack/mysql/mysql-installation-guide).<br/>
   * To install the dependencies run : <br/> npm install
   
   ## Usage 
@@ -24,7 +24,7 @@
     - source db/schema.sql<br/> 
     - source db/seeds.sql <br/> 
    * To start using this application run : <br/> node index.js <br/>
-   * For a demonstration about usage, visit the [walkthrough video](https://watch.screencastify.com/v/giDjMHUtgnU9RHnG41zU)
+   * For a demonstration about usage, visit the [walkthrough video](https://drive.google.com/file/d/1xdtBigcYQhse4-5FU5NlFZccoJsN3JQJ/view)
 
  
   ## Contribution
