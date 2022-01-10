@@ -4,6 +4,7 @@ const cTable = require('console.table');
 
 var departments = [];
 var roles = [];
+var employees = ['N/A'];
 
 function getDepartments(){
 db.query('select name from department', (err, rows)=>{
@@ -23,12 +24,23 @@ db.query('select title from role', (err, rows)=>{
         }
         //console.log(rows);
         rows.map(row => roles.push(row.title));
+        //console.log(roles);
+    });
+}
+function getEmployees(){
+db.query(`select CONCAT(first_name,' ',last_name) AS name from employee`, (err, rows)=>{
+        if(err){
+            throw err;
+        }
+        //console.log(rows);
+        rows.map(row => employees.push(row.name));
         //roles.push(rows) ;
-        console.log(roles);
+        console.log(employees);
     });
 }
 getDepartments();
 getRoles();
+getEmployees();
 //Menu 
 const menu = ()=>{
    return inquirer.prompt({
@@ -173,6 +185,73 @@ const addRole = ()=>{
     });
 
 }
+const addEmployee = ()=>{
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'firstName',
+            message: "What is the employee's first name?(Required)",
+            validate: fstName =>{
+                if(fstName){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: "What is the employee's last name?(Required)",
+            validate: roleName =>{
+                if(roleName){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'list',
+            name: 'role',
+            message: "What is the employee's role?",
+            choices: roles            
+        },
+        {
+            type: 'list',
+            name: 'manager',
+            message: "Who is the employee's manager?",
+            choices: employees,
+            default:null
+        }
+]).then(({firstName, lastName, role, manager})=>{
+let sql =`insert into employee (first_name, last_name, role_id, manager_id) values('${firstName}', '${lastName}', (select id from role where title='${role}'),`
+        
+    db.query(`select id from employee where first_name='${manager.split(" ")[0]}' and last_name='${manager.split(" ")[1]}'`, (err,row)=>{
+        if (err) {
+            return null;
+        }
+        else {
+        console.log(row);
+        //test if a manager was selected
+        if(row.length !== 0){
+            sql +=`${row[0].id});`;
+        } else{
+            sql+=`null)`
+        }   
+            db.query(sql, (err, result)=>{
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`Added ${firstName} ${lastName} to the database`);
+            menu();
+        });
+        }
+    });
+       
+    });
 
-// console.log(departments);
+}
+
 menu();
