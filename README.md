@@ -27,8 +27,6 @@
    * For a demonstration about usage, visit the [walkthrough video](https://watch.screencastify.com/v/giDjMHUtgnU9RHnG41zU)
 
  
-  ## License
-
-  This work is licensed under [MIT License](https://opensource.org/licenses/MIT).<br/>
+  ## Contribution
   Made with ❤ by Khaoula Jabour <br/>
-  &copy; 2021 Employee Tracker System
+  ### &copy; 2022 Employee Tracker System
