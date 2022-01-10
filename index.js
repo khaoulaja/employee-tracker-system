@@ -7,32 +7,32 @@ var roles = [];
 var employees =['N/A'] ;
 var chooseEmpl=[];
 
-
+// create a list of departments names
 function getDepartments(){
     departments=[];
 db.query('select name from department', (err, rows)=>{
         if(err){
             throw err;
         }
-        //console.log(rows);
-        rows.map(row => departments.push(row.name));
         
-      // console.log(departments);
+        rows.map(row => departments.push(row.name));
+     
     });
 }
+// create a list of roles titles
 function getRoles(){
     roles = [];
 db.query('select title from role', (err, rows)=>{
         if(err){
             throw err;
         }
-        //console.log(rows);
         rows.map(row => roles.push(row.title));
-        //console.log(roles);
+        
     });
 }
+
+//create a list of employees names
 function getEmployees(){
-    // employees = ['N/A'];
     
 db.query(`select CONCAT(first_name,' ',last_name) AS name from employee`, (err, rows)=>{
         if(err){
@@ -85,6 +85,7 @@ const menu = ()=>{
         }
     });
 }
+//display all departments in an organized table
 const allDepartments = ()=>{
     const sql =`select * from department`;
     db.query(sql, (err, rows)=>{
@@ -98,6 +99,7 @@ const allDepartments = ()=>{
         menu();
     });
 }
+//display all roles with departments in an organized table
 const allRoles = ()=>{
     const sql =`select role.id, title as job_title, department.name as department, salary from role left join department on role.department_id=department.id`;
     db.query(sql, (err, rows)=>{
@@ -111,6 +113,7 @@ const allRoles = ()=>{
         menu();
     });
 }
+// //display all employees with their job title and their manager in an organized table
 const allEmployees = ()=>{
     const sql =`select e.id, e.first_name, e.last_name, role.title as job_title, department.name as department, salary,
      CONCAT(m.first_name, ' ', m.last_name) AS manager_name 
@@ -130,6 +133,7 @@ const allEmployees = ()=>{
         menu();
     });
 }
+//add a single department
 const addDepartment = ()=>{
     
     return inquirer.prompt({
@@ -158,6 +162,7 @@ const addDepartment = ()=>{
     });
 
 }
+//add a single role
 const addRole = ()=>{
     getDepartments();
     return inquirer.prompt([
@@ -192,7 +197,7 @@ const addRole = ()=>{
             choices: departments
         }
 ]).then(({role, salary, department})=>{
-        //add new role to db
+        //add role to db
         const sql =`insert into role (title, salary, department_id) values('${role}', ${salary}, (select id from department where name='${department}'));`;
         db.query(sql, (err, result)=>{
             if (err) {
@@ -205,6 +210,7 @@ const addRole = ()=>{
     });
 
 }
+//add a single employee
 const addEmployee = ()=>{
     getRoles();
     // getEmployees();
@@ -276,9 +282,10 @@ let sql =`insert into employee (first_name, last_name, role_id, manager_id) valu
     });
 
 }
+//update employee's role
 const updateEmployee = ()=>{
     // getEmployees();
-    // getRoles();
+     getRoles();
     return inquirer.prompt([
         {
             type: 'list',
