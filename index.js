@@ -4,20 +4,23 @@ const cTable = require('console.table');
 
 var departments = [];
 var roles = [];
-var employees = ['N/A'];
+var employees =['N/A'] ;
+var chooseEmpl=[];
 
 function getDepartments(){
+    departments=[];
 db.query('select name from department', (err, rows)=>{
         if(err){
             throw err;
         }
         //console.log(rows);
         rows.map(row => departments.push(row.name));
-        departments.push(rows) ;
+        
       // console.log(departments);
     });
 }
 function getRoles(){
+    roles = [];
 db.query('select title from role', (err, rows)=>{
         if(err){
             throw err;
@@ -28,15 +31,17 @@ db.query('select title from role', (err, rows)=>{
     });
 }
 function getEmployees(){
+    // employees = ['N/A'];
+    
 db.query(`select CONCAT(first_name,' ',last_name) AS name from employee`, (err, rows)=>{
         if(err){
             throw err;
         }
-        //console.log(rows);
         rows.map(row => employees.push(row.name));
-        //roles.push(rows) ;
-        console.log(employees);
+        chooseEmpl=employees.filter(emp=>{return emp !== 'N/A'});
+        
     });
+    
 }
 getDepartments();
 getRoles();
@@ -100,7 +105,7 @@ const allEmployees = ()=>{
      from employee e left join employee m on e.manager_id=m.id 
      left join role on e.role_id=role.id 
      left join department on role.department_id=department.id 
-     order by manager_name`;
+     order by role.id`;
 
     db.query(sql, (err, rows)=>{
         if(err){
@@ -114,6 +119,7 @@ const allEmployees = ()=>{
     });
 }
 const addDepartment = ()=>{
+    
     return inquirer.prompt({
         type: 'input',
         name: 'departmentName',
@@ -134,12 +140,14 @@ const addDepartment = ()=>{
                 return;
             }
             console.log(`Added ${departmentName}`);
+            
             menu();
         });
     });
 
 }
 const addRole = ()=>{
+    getDepartments();
     return inquirer.prompt([
         {
             type: 'input',
@@ -186,6 +194,8 @@ const addRole = ()=>{
 
 }
 const addEmployee = ()=>{
+    getRoles();
+    // getEmployees();
     return inquirer.prompt([
         {
             type: 'input',
@@ -221,8 +231,7 @@ const addEmployee = ()=>{
             type: 'list',
             name: 'manager',
             message: "Who is the employee's manager?",
-            choices: employees,
-            default:null
+            choices: employees
         }
 ]).then(({firstName, lastName, role, manager})=>{
 let sql =`insert into employee (first_name, last_name, role_id, manager_id) values('${firstName}', '${lastName}', (select id from role where title='${role}'),`
@@ -245,6 +254,47 @@ let sql =`insert into employee (first_name, last_name, role_id, manager_id) valu
                 return;
             }
             console.log(`Added ${firstName} ${lastName} to the database`);
+            employees.push(`${firstName} ${lastName}`);
+            chooseEmpl.push(`${firstName} ${lastName}`);
+            menu();
+        });
+        }
+    });
+       
+    });
+
+}
+const updateEmployee = ()=>{
+    // getEmployees();
+    // getRoles();
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'employee',
+            message: "Which employee's role do you want to update?",
+            choices: chooseEmpl
+        },
+        {
+            type: 'list',
+            name: 'newRole',
+            message: "What is the new role?",
+            choices: roles            
+        }
+]).then(({employee, newRole})=>{
+
+    // get the empoyee's id and then update the role    
+    db.query(`select id from employee where first_name='${employee.split(" ")[0]}' and last_name='${employee.split(" ")[1]}'`, (err,row)=>{
+        if (err) {
+            return null;
+        }
+        else {
+            console.log(row);  
+            db.query(`update employee set role_id=(select id from role where title='${newRole}') where id=${row[0].id};`, (err, result)=>{
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log(`Role updated to ${newRole}!`);
             menu();
         });
         }
@@ -255,3 +305,4 @@ let sql =`insert into employee (first_name, last_name, role_id, manager_id) valu
 }
 
 menu();
+
